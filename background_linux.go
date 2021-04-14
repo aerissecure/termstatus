@@ -1,8 +1,6 @@
 package termstatus
 
 import (
-	"github.com/restic/restic/internal/debug"
-
 	"golang.org/x/sys/unix"
 )
 
@@ -11,7 +9,6 @@ import (
 func IsProcessBackground(fd uintptr) bool {
 	bg, err := isProcessBackground(fd)
 	if err != nil {
-		debug.Log("Can't check if we are in the background. Using default behaviour. Error: %s\n", err.Error())
 		return false
 	}
 	return bg

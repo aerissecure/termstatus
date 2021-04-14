@@ -3,8 +3,6 @@ package termstatus
 import (
 	"os"
 	"testing"
-
-	rtest "github.com/restic/restic/internal/test"
 )
 
 func TestIsProcessBackground(t *testing.T) {
@@ -14,7 +12,9 @@ func TestIsProcessBackground(t *testing.T) {
 	}
 
 	_, err = isProcessBackground(tty.Fd())
-	rtest.OK(t, err)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	_ = tty.Close()
 }

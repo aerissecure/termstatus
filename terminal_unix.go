@@ -20,9 +20,9 @@ func moveCursorUp(wr io.Writer, fd uintptr) func(io.Writer, uintptr, int) {
 	return posixMoveCursorUp
 }
 
-// CanUpdateStatus returns true if status lines can be printed, the process
+// canUpdateStatus returns true if status lines can be printed, the process
 // output is not redirected to a file or pipe.
-func CanUpdateStatus(fd uintptr) bool {
+func canUpdateStatus(fd uintptr) bool {
 	if !terminal.IsTerminal(int(fd)) {
 		return false
 	}
