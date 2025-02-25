@@ -7,8 +7,6 @@ import (
 	"io"
 	"strconv"
 	"testing"
-
-	rtest "github.com/restic/restic/internal/test"
 )
 
 func TestSetStatus(t *testing.T) {
@@ -54,7 +52,7 @@ func TestSetStatus(t *testing.T) {
 	exp += home + clear + "\n" + home + clear + home + up // Status cleared
 
 	<-term.closed
-	rtest.Equals(t, exp, buf.String())
+	Equals(t, exp, buf.String())
 }
 
 func TestQuote(t *testing.T) {
@@ -75,9 +73,9 @@ func TestQuote(t *testing.T) {
 		{"\x1bm_red_is_beautiful", true},
 	} {
 		if c.needQuote {
-			rtest.Equals(t, strconv.Quote(c.in), Quote(c.in))
+			Equals(t, strconv.Quote(c.in), Quote(c.in))
 		} else {
-			rtest.Equals(t, c.in, Quote(c.in))
+			Equals(t, c.in, Quote(c.in))
 		}
 	}
 }
@@ -157,7 +155,7 @@ func TestSanitizeLines(t *testing.T) {
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("%s %d", test.input, test.width), func(t *testing.T) {
 			out := sanitizeLines(test.input, test.width)
-			rtest.Equals(t, test.output, out)
+			Equals(t, test.output, out)
 		})
 	}
 }
