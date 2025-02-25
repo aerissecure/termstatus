@@ -1,3 +1,4 @@
+//go:build windows
 // +build windows
 
 package termstatus
@@ -8,13 +9,13 @@ import (
 	"syscall"
 	"unsafe"
 
-	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/sys/windows"
+	"golang.org/x/term"
 )
 
 // clearCurrentLine removes all characters from the current line and resets the
 // cursor position to the first column.
-func clearCurrentLine(wr io.Writer, fd uintptr) func(io.Writer, uintptr) {
+func clearCurrentLine(fd uintptr) func(io.Writer, uintptr) {
 	// easy case, the terminal is cmd or psh, without redirection
 	if isWindowsTerminal(fd) {
 		return windowsClearCurrentLine
@@ -25,7 +26,7 @@ func clearCurrentLine(wr io.Writer, fd uintptr) func(io.Writer, uintptr) {
 }
 
 // moveCursorUp moves the cursor to the line n lines above the current one.
-func moveCursorUp(wr io.Writer, fd uintptr) func(io.Writer, uintptr, int) {
+func moveCursorUp(fd uintptr) func(io.Writer, uintptr, int) {
 	// easy case, the terminal is cmd or psh, without redirection
 	if isWindowsTerminal(fd) {
 		return windowsMoveCursorUp
@@ -44,7 +45,7 @@ var (
 
 // windowsClearCurrentLine removes all characters from the current line and
 // resets the cursor position to the first column.
-func windowsClearCurrentLine(wr io.Writer, fd uintptr) {
+func windowsClearCurrentLine(_ io.Writer, fd uintptr) {
 	var info windows.ConsoleScreenBufferInfo
 	windows.GetConsoleScreenBufferInfo(windows.Handle(fd), &info)
 
@@ -60,7 +61,7 @@ func windowsClearCurrentLine(wr io.Writer, fd uintptr) {
 }
 
 // windowsMoveCursorUp moves the cursor to the line n lines above the current one.
-func windowsMoveCursorUp(wr io.Writer, fd uintptr, n int) {
+func windowsMoveCursorUp(_ io.Writer, fd uintptr, n int) {
 	var info windows.ConsoleScreenBufferInfo
 	windows.GetConsoleScreenBufferInfo(windows.Handle(fd), &info)
 
@@ -73,7 +74,7 @@ func windowsMoveCursorUp(wr io.Writer, fd uintptr, n int) {
 
 // isWindowsTerminal return true if the file descriptor is a windows terminal (cmd, psh).
 func isWindowsTerminal(fd uintptr) bool {
-	return terminal.IsTerminal(int(fd))
+	return term.IsTerminal(int(fd))
 }
 
 func isPipe(fd uintptr) bool {
